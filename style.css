@@ -1,11 +1,12 @@
 #tablebox{
-margin-top:5%;
+
 margin-left: 30%;
 margin-right:30%;
 }
 
 table, td, th {
-  border: 1px solid;
+  
+  text-align: center;
 }
 
 table {
@@ -15,4 +16,12 @@ table {
 
 .car{
   width: 0px;
+}
+
+td:nth-child(odd){
+  border: 1px solid;
+}
+
+td:nth-child(even){
+  width: 20%;
 }

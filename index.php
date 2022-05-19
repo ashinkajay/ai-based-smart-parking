@@ -29,18 +29,18 @@ $car_image = array();
 for($i = 0; $i<10; $i++){
     if ($cars[$i] == 0){
         if($i%2 == 0){
-            $car_image[$i] = '<img src = "images/free_slot.gif" width = "200">';
+            $car_image[$i] = '<img src = "images/free_slot.gif" height = "80">';
         }
         else{
-            $car_image[$i] = '<img src = "images/free_slot.gif" width = "200">';
+            $car_image[$i] = '<img src = "images/free_slot.gif" height = "80">';
         }
     }
     else{
         if($i%2 == 0){
-            $car_image[$i] = '<img src = "images/car_red_left.gif" width = "200">';
+            $car_image[$i] = '<img src = "images/car_red_left.gif" height = "80">';
         }
         else{
-            $car_image[$i] = '<img src = "images/car_red_right.gif" width = "200">';
+            $car_image[$i] = '<img src = "images/car_red_right.gif" height = "80">';
         }
     }
 }
@@ -48,11 +48,11 @@ for($i = 0; $i<10; $i++){
 
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
-    <title> Parking Area </title>
+    <title> Park here </title>
 </head>
 <body>
 <h1 style="text-align: center;">
-    Parking Area
+    Park here
 </h1>
 <div id = "tablebox">
 <table>
@@ -60,28 +60,28 @@ for($i = 0; $i<10; $i++){
     echo '
     <tr>
         <td class = "car">'.$car_image[8].'A9</td>
-        <td>Road</td>
-        <td class = "car">A10'.$car_image[9].'</td>
+        <td></td>
+        <td class = "car">'.$car_image[9].'A10</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[6].'A7</td>
-        <td>Road</td>
-        <td class = "car">A8'.$car_image[7].'</td>
+        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td class = "car">'.$car_image[7].'A8</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[4].'A5</td>
-        <td>Road</td>
-        <td class = "car">A6'.$car_image[5].'</td>
+        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td class = "car">'.$car_image[5].'A6</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[2].'A3</td>
-        <td>Road</td>
-        <td class = "car">A4'.$car_image[3].'</td>
+        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td class = "car">'.$car_image[3].'A4</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[0].'A1</td>
-        <td>Road</td>
-        <td class = "car">A2'.$car_image[1].'</td>
+        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td class = "car">'.$car_image[1].'A2</td>
     </tr>';
     ?>
 </table>

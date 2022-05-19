@@ -1,0 +1,18 @@
+#tablebox{
+margin-top:5%;
+margin-left: 30%;
+margin-right:30%;
+}
+
+table, td, th {
+  border: 1px solid;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.car{
+  width: 0px;
+}

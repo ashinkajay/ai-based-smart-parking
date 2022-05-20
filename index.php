@@ -13,11 +13,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM parking"; /*select items to display from the sensordata table in the data base*/
+$sql = "SELECT * FROM parkingarea"; /*select items to display from the sensordata table in the data base*/
+$cars = array(); //stores slot availability info
 
  if ($result = $conn->query($sql)) {
     while ($row = $result->fetch_assoc()) {
-        $cars = array($row["A1"], $row["A2"],$row["A3"],$row["A4"],0,0,0,0,0,0);
+        array_push($cars,$row["availability"]);
     }
     $result->free();
 }
@@ -44,6 +45,21 @@ for($i = 0; $i<10; $i++){
         }
     }
 }
+
+// To put required html for the road
+$freeSlotNo = 4;
+$road = ["", "", "", "", ""];
+$step_count = floor(($freeSlotNo - 1)/2);
+for($i=0; $i<$step_count; $i++){
+$road[$i] = '<img src = "images/arrow.gif" height = "80">';
+}
+if($freeSlotNo %2 == 0){
+    $road[$i] = '<img src = "images/arrow_right.gif" height = "80">';
+}
+else{
+    $road[$i] = '<img src = "images/arrow_left.gif" height = "80">';
+}
+
 ?>
 
 <head>
@@ -60,27 +76,27 @@ for($i = 0; $i<10; $i++){
     echo '
     <tr>
         <td class = "car">'.$car_image[8].'A9</td>
-        <td></td>
+        <td>'.$road[4].'</td>
         <td class = "car">'.$car_image[9].'A10</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[6].'A7</td>
-        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td>'.$road[3].'</td>
         <td class = "car">'.$car_image[7].'A8</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[4].'A5</td>
-        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td>'.$road[2].'</td>
         <td class = "car">'.$car_image[5].'A6</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[2].'A3</td>
-        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td>'.$road[1].'</td>
         <td class = "car">'.$car_image[3].'A4</td>
     </tr>
     <tr>
         <td class = "car">'.$car_image[0].'A1</td>
-        <td><img src = "images/arrow.gif" height = "50" ></td>
+        <td>'.$road[0].'</td>
         <td class = "car">'.$car_image[1].'A2</td>
     </tr>';
     ?>

@@ -1,6 +1,6 @@
 .flex-parent-element {
   display: flex;
-  width: 50%;
+  width: 100%;
 }
 
 .flex-child-element {
@@ -16,11 +16,6 @@
 
 margin-left: 30%;
 margin-right:30%;
-}
-
-#tablebox_parkingarea{
-  margin-left: 0%;
-  margin-right:0%;
 }
 
 table, td, th {

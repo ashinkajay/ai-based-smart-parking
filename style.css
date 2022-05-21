@@ -1,7 +1,26 @@
+.flex-parent-element {
+  display: flex;
+  width: 50%;
+}
+
+.flex-child-element {
+  flex: 1;
+  margin: 10px;
+}
+
+.flex-child-element:first-child {
+  margin-right: 20px;
+}
+
 #tablebox{
 
 margin-left: 30%;
 margin-right:30%;
+}
+
+#tablebox_parkingarea{
+  margin-left: 0%;
+  margin-right:0%;
 }
 
 table, td, th {

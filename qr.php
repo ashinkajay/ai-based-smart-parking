@@ -4,28 +4,6 @@
 // Include the qrlib file
 include 'includes/phpqrcode/qrlib.php';
 
-$api_key_value = "tPmAT5Ab3j7F9";
-$api_key= "";
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $api_key = test_input($_GET["api_key"]);
-    if($api_key == $api_key_value) {
-        $freeSlotNo = $_GET["slot"];
-    }
-    else {
-        echo "Wrong API Key provided.";
-    }
-}
-else {
-    echo "Not using HTTP GET.";
-}
-
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
-}
-
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -47,8 +25,17 @@ $cars = array(); //stores slot availability info
     }
     $result->free();
 }
-    
+
 $conn->close();
+
+// Free slot calculation
+$freeSlotNo = 10;
+for($i = 0; $i<10; $i++){
+    if($cars[$i] == 0){
+        $freeSlotNo = $i +1;
+        break;
+    }
+}
 
 // To put required html of car image
 $car_image = array();

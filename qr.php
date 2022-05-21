@@ -110,6 +110,11 @@ else{
         <td class = "car">'.$car_image[0].'A1</td>
         <td>'.$road[0].'</td>
         <td class = "car">'.$car_image[1].'A2</td>
+    </tr>
+    <tr>
+        <td style="border: none"></td>
+        <td><img src = "images/gate.gif" height = "80"></td>
+        <td style="border: none"></td>
     </tr>';
     ?>
 </table>

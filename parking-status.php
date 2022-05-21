@@ -13,15 +13,16 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM parking"; /*select items to display from the sensordata table in the data base*/
+$sql = "SELECT * FROM parkingarea"; /*select items to display from the sensordata table in the data base*/
+$cars = array();
 
  if ($result = $conn->query($sql)) {
     while ($row = $result->fetch_assoc()) {
-        $cars = array($row["A1"], $row["A2"],$row["A3"],$row["A4"],0,0,0,0,0,0);
+        array_push($cars,$row["availability"]);
     }
     $result->free();
 }
-    
+
 $conn->close();
 
 // To put required html of car image
@@ -82,6 +83,11 @@ for($i = 0; $i<10; $i++){
         <td class = "car">'.$car_image[0].'A1</td>
         <td>Road</td>
         <td class = "car">'.$car_image[1].'A2</td>
+    </tr>
+    <tr>
+        <td style="border: none"></td>
+        <td><img src = "images/gate.gif" height = "80"></td>
+        <td style="border: none"></td>
     </tr>';
     ?>
 </table>

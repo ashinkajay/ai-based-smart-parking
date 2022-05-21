@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html>
 <?php
+
+$api_key_value = "tPmAT5Ab3j7F9";
+$api_key= "";
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    $api_key = test_input($_GET["api_key"]);
+    if($api_key == $api_key_value) {
+        $freeSlotNo = $_GET["slot"];
+    }
+    else {
+        echo "Wrong API Key provided.";
+    }
+}
+else {
+    echo "Not using HTTP GET.";
+}
+
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -47,7 +70,6 @@ for($i = 0; $i<10; $i++){
 }
 
 // To put required html for the road
-$freeSlotNo = 4;
 $road = ["", "", "", "", ""];
 $step_count = floor(($freeSlotNo - 1)/2);
 for($i=0; $i<$step_count; $i++){

@@ -52,9 +52,8 @@ for($i = 0; $i<10; $i++){
     <title> Parking Area </title>
 </head>
 <body>
-<h1 style="text-align: center;">
-    Parking Area
-</h1>
+
+<h2 style="text-align: center; color:#1b00fe">Occupied: <?php echo array_sum($cars); ?> &nbsp&nbsp&nbsp Free slots: <?php echo 10 - array_sum($cars); ?></h2>
 <div id = "tablebox">
 <table>
     <?php

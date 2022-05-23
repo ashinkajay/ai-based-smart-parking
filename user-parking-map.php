@@ -53,18 +53,18 @@ $car_image = array();
 for($i = 0; $i<10; $i++){
     if ($cars[$i] == 0){
         if($i%2 == 0){
-            $car_image[$i] = '<img src = "images/free_slot.gif" height = "80">';
+            $car_image[$i] = '<img src = "images/free_slot.gif" height = "180">';
         }
         else{
-            $car_image[$i] = '<img src = "images/free_slot.gif" height = "80">';
+            $car_image[$i] = '<img src = "images/free_slot.gif" height = "180">';
         }
     }
     else{
         if($i%2 == 0){
-            $car_image[$i] = '<img src = "images/car_red_left.gif" height = "80">';
+            $car_image[$i] = '<img src = "images/car_red_left.gif" height = "180">';
         }
         else{
-            $car_image[$i] = '<img src = "images/car_red_right.gif" height = "80">';
+            $car_image[$i] = '<img src = "images/car_red_right.gif" height = "180">';
         }
     }
 }
@@ -89,10 +89,12 @@ else{
     <title> Park here </title>
 </head>
 <body>
-<h1 style="text-align: center;">
+<h1 style="text-align: center; font-size:100px;">
     Park here
 </h1>
-<div id = "tablebox">
+<br>
+<br>
+<div id = "tableboxmobile">
 <table>
     <?php
     echo '
@@ -123,7 +125,7 @@ else{
     </tr>
     <tr>
         <td style="border: none"></td>
-        <td><img src = "images/gate.gif" height = "80"></td>
+        <td><img src = "images/gate.gif" height = "180"></td>
         <td style="border: none"></td>
     </tr>';
     ?>

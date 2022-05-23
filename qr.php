@@ -121,7 +121,7 @@ else{
 </div>
 <div class="flex-child-element">
     <?php
-    $text = "http://localhost/project/parkingmap.php?api_key=tPmAT5Ab3j7F9&slot=".$freeSlotNo;
+    $text = "http://192.168.43.205/project/user-parking-map.php?api_key=tPmAT5Ab3j7F9&slot=".$freeSlotNo;
   
     // $path variable store the location where to 
     // store image and $file creates directory name

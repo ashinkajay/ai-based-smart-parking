@@ -18,6 +18,11 @@ margin-left: 30%;
 margin-right:30%;
 }
 
+#tableboxmobile{
+  margin-left: 5%;
+  margin-right:5%;
+  }
+
 table, td, th {
   
   text-align: center;

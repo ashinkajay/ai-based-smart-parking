@@ -37,11 +37,11 @@ if ($conn->connect_error) {
 }
 
 $sql = "SELECT * FROM parkingarea"; /*select items to display from the sensordata table in the data base*/
-$cars = array(); //stores slot availability info
+$cars = array(); //stores slot occupancy info
 
  if ($result = $conn->query($sql)) {
     while ($row = $result->fetch_assoc()) {
-        array_push($cars,$row["availability"]);
+        array_push($cars,$row["occupancy"]);
     }
     $result->free();
 }

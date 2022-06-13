@@ -18,7 +18,7 @@ $cars = array();
 
  if ($result = $conn->query($sql)) {
     while ($row = $result->fetch_assoc()) {
-        array_push($cars,$row["availability"]);
+        array_push($cars,$row["occupancy"]);
     }
     $result->free();
 }

@@ -9,21 +9,19 @@
 	$api_key_value = "tPmAT5Ab3j7F9";
 
 	$api_key= "";
-	$car = array(1,1,1,1,1,0,0,0,0,0);
+	//$car = array(1,1,1,1,1,0,0,0,0,0);
 
-	if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    	$api_key = test_input($_GET["api_key"]);
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    	$api_key = test_input($_POST["api_key"]);
     	if($api_key == $api_key_value) {
-			//$car = test_input($_GET["car"]);
+			//$car = test_input($_POST["cars"]);
+			$cars = test_input($_POST["cars"]);
 			// Create connection
 			$conn = new mysqli($servername, $username, $password, $dbname);
 			// Check connection
-			if ($conn->connect_error) {
-					die("Connection failed: " . $conn->connect_error);
-				} 
-			
-			for($i = 0; $i <10; $i++){
-				$sql = "UPDATE parkingarea SET occupancy = '".$car[$i]."' WHERE slot = " . ($i + 1) ."";
+				
+			for($i = 0; $i < 4; $i++){
+				$sql = "UPDATE parkingarea SET occupancy = '".$cars[$i]."' WHERE slot = " . ($i + 1) ."";
 				if ($conn->query($sql) === TRUE) {
 						echo "Record ".$i." created successfully";
 				} 

@@ -49,6 +49,7 @@ for($i = 0; $i<10; $i++){
 
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    <meta http-equiv="refresh" content="1" >
     <title> Parking Area </title>
 </head>
 <body>

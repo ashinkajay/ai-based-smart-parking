@@ -14,16 +14,16 @@ const int echoPin2 = 2; //D4
 const int echoPin3 = 0; //D3
 const int echoPin4 = 4; //D2
 const int echoPin5 = 5; //D1
-
 //define sound velocity in cm/uS
 #define SOUND_VELOCITY 0.034
 #define CM_TO_INCH 0.393701
-
 float distanceCm1,distanceCm2,distanceCm3,distanceCm4,distanceCm5;
+
+String cars = "0000000000";
 
 // Replace with your network credentials
 const char* ssid     = "Mobile hotspot";
-const char* password = "asdfg124";
+const char* password = "asdfg32334";
 
 // REPLACE with your Domain name and URL path or IP address with path
 String serverName = "http://192.168.43.68/project/";
@@ -55,6 +55,27 @@ void setup() {
 
   
 }
+
+String get_time(){
+      WiFiClient client;
+      HTTPClient http;
+      // Prepare HTTP GET request for gate open
+      String httpRequestData = serverName + "get-time.php?api_key=" + api_key_value;
+      // Your Domain name with URL path or IP address with path
+      http.begin(client, httpRequestData);
+      // Specify content-type header
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      //Serial.print("httpRequestData: ");
+      //Serial.println(httpRequestData);
+      // Send HTTP GET request
+      int httpResponseCode = http.GET();
+      String payload = http.getString();    //Get the response payload
+      //Serial.println(httpResponseCode);   //Print HTTP return code
+      //Serial.println("break");
+      //Serial.println(payload);    //Print request response payload
+      return payload;
+    }
+    
 void loop() {
 
     // Clears the trigPin
@@ -90,34 +111,44 @@ void loop() {
     Serial.println(payload);    //Print request response payload 
 
  
+    // Update parking status locally
+    String carsTemp = cars;
+    if(distanceCm1 < 20 && cars[0] == '0'){
+      carsTemp.setCharAt(0, '1');
+      Serial.println("Car detected");
+    }
+    else if(distanceCm1 >= 20 && cars[0] == '1') {
+      carsTemp.setCharAt(0, '0');
+      Serial.println("Car went out");
+    }
+
+    
     //HTTP post car parking sensor
-    String cars = "0000000000";
-    if(distanceCm1 < 5){
-      cars.setCharAt(0, '1');
+    if(carsTemp != cars){
+      cars = carsTemp;
+      String update_parking_status = serverName + "update-parking-status.php";
+      // Prepare your HTTP POST request data
+      httpRequestData = "api_key=" + api_key_value + "&cars=" + cars + "";
+      // Your Domain name with URL path or IP address with path
+      http.begin(client, update_parking_status);
+      // Specify content-type header
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      Serial.print("httpRequestData: ");
+      Serial.println(httpRequestData);
+      // Send HTTP POST request
+      httpResponseCode = http.POST(httpRequestData);
+      payload = http.getString();    //Get the response payload
+      Serial.println(httpResponseCode);   //Print HTTP return code
+      Serial.println("break");
+      Serial.println(payload);    //Print request response payload 
     }
-    else {
-      cars.setCharAt(0, '0');
-    }
-    String update_parking_status = serverName + "update-parking-status.php";
-    // Prepare your HTTP POST request data
-    httpRequestData = "api_key=" + api_key_value + "&cars=" + cars + "";
-    // Your Domain name with URL path or IP address with path
-    http.begin(client, update_parking_status);
-    // Specify content-type header
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    Serial.print("httpRequestData: ");
-    Serial.println(httpRequestData);
-    // Send HTTP POST request
-    httpResponseCode = http.POST(httpRequestData);
-    payload = http.getString();    //Get the response payload
-    Serial.println(httpResponseCode);   //Print HTTP return code
-    Serial.println("break");
-    Serial.println(payload);    //Print request response payload 
+    
   
     // Free resources
     http.end();
   
     //Send an HTTP POST request every 2 seconds
-    delay(2000);  
+    //delay(2000);
+    Serial.println(get_time());
 
 }

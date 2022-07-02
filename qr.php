@@ -75,6 +75,7 @@ else{
 
 <head>
     <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    <meta http-equiv="refresh" content="1" >
     <title> Park here </title>
 </head>
 <body>
@@ -121,7 +122,7 @@ else{
 </div>
 <div class="flex-child-element">
     <?php
-    $text = "http://192.168.43.205/project/user-parking-map.php?api_key=tPmAT5Ab3j7F9&slot=".$freeSlotNo;
+    $text = "http://192.168.43.68/project/user-parking-map.php?api_key=tPmAT5Ab3j7F9&slot=".$freeSlotNo;
   
     // $path variable store the location where to 
     // store image and $file creates directory name

@@ -116,7 +116,7 @@ const int echoPin5 = 5; //D1
 //define sound velocity in cm/uS
 #define SOUND_VELOCITY 0.034
 #define CM_TO_INCH 0.393701
-float distanceCm1,distanceCm2,distanceCm3,distanceCm4,distanceCm5;
+float distanceCm[5]; //1st for sensor for slot and 5th sensor is for gate
 String cars = "0000000000";
 int car_entry_time[10]; //For storing entry timing of cars
 
@@ -199,11 +199,11 @@ void loop() {
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
 
-    distanceCm1 = pulseIn(echoPin1, HIGH) * SOUND_VELOCITY/2;
-    distanceCm2 = pulseIn(echoPin2, HIGH) * SOUND_VELOCITY/2;
-    distanceCm3 = pulseIn(echoPin3, HIGH) * SOUND_VELOCITY/2;
-    distanceCm4 = pulseIn(echoPin4, HIGH) * SOUND_VELOCITY/2;
-    distanceCm5 = pulseIn(echoPin5, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[0] = pulseIn(echoPin1, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[1] = pulseIn(echoPin2, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[2] = pulseIn(echoPin3, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[3] = pulseIn(echoPin4, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[4] = pulseIn(echoPin5, HIGH) * SOUND_VELOCITY/2;
   
     WiFiClient wificlient;
     HTTPClient http;
@@ -226,25 +226,28 @@ void loop() {
  
     // Update parking status locally
     String carsTemp = cars;
-    if(distanceCm1 < 20 && cars[0] == '0'){
-      carsTemp.setCharAt(0, '1');
-      car_entry_time[0] = get_time();
-      Serial.println("Car detected");
-    }
-    else if(distanceCm1 >= 20 && cars[0] == '1') {
-      carsTemp.setCharAt(0, '0');
-      Serial.println("Car went out");
-      // Publish message to AWS
-      if (now - lastMsg > 2000) {
-      lastMsg = now;
-      snprintf (msg, 150, "{\"slot\":\"%d\",\"entry_time\": \"%d\",\"exit_time\": \"%d\"}", 1, car_entry_time[0], get_time() );
-      Serial.print("Publish message: ");
-      Serial.println(msg);
-      client.publish("carparking", msg);
-      Serial.print("Heap: "); 
-      Serial.println(ESP.getFreeHeap()); //Low heap can cause problems
+    for(int i=0; i < 4; i++){
+      if(distanceCm[i] < 20 && cars[i] == '0'){
+        carsTemp.setCharAt(i, '1');
+        car_entry_time[i] = get_time();
+        Serial.println("Car detected");
+      }
+      else if(distanceCm[i] >= 20 && cars[i] == '1') {
+        carsTemp.setCharAt(i, '0');
+        Serial.println("Car went out");
+        // Publish message to AWS
+        if (now - lastMsg > 2000) {
+          lastMsg = now;
+          snprintf (msg, 150, "{\"slot\":\"%d\",\"entry_time\": \"%d\",\"exit_time\": \"%d\"}", i+1, car_entry_time[0], get_time() );
+          Serial.print("Publish message: ");
+          Serial.println(msg);
+          client.publish("carparking", msg);
+          Serial.print("Heap: "); 
+          Serial.println(ESP.getFreeHeap()); //Low heap can cause problems
+        }
       }
     }
+    
 
     
     //HTTP post car parking sensor

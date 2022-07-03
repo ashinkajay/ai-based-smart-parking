@@ -43,20 +43,15 @@ else {
 	if ($_SERVER["REQUEST_METHOD"] == "GET") {
     	$api_key = test_input($_GET["api_key"]);
     	if($api_key == $api_key_value) {
-        	if ($cars < 4){
-				$new_car_count = $cars + 1;
-				$sql = "UPDATE cars SET cars = '".$new_car_count."' WHERE id = 1";
-				if ($conn->query($sql) === TRUE) {
-						echo "1";
-				} 
-				else {
-						echo "Error creating record: " . $sql . "<br>" . $conn->error;
-				}
-				
-			}
+        	$new_car_count = $cars - 1;
+			$sql = "UPDATE cars SET cars = '".$new_car_count."' WHERE id = 1";
+			if ($conn->query($sql) === TRUE) {
+					echo "1";
+			} 
 			else {
-				echo 0;
+					echo "Error creating record: " . $sql . "<br>" . $conn->error;
 			}
+			
 		}
     	else {
         	echo "Wrong API Key provided.";

@@ -6,6 +6,7 @@
 #include <PubSubClient.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <Servo.h>
 
 // Network and server details
 const char* ssid     = "Mobile hotspot";
@@ -119,6 +120,7 @@ const int echoPin5 = 5; //D1
 float distanceCm[5]; //1st for sensor for slot and 5th sensor is for gate
 String cars = "0000000000";
 int car_entry_time[10]; //For storing entry timing of cars
+Servo servo;
 
 
 void setup() {
@@ -128,6 +130,8 @@ void setup() {
   pinMode(echoPin3, INPUT); // Sets the echoPin as an Input
   pinMode(echoPin4, INPUT); // Sets the echoPin as an Input
   pinMode(echoPin5, INPUT); // Sets the echoPin as an Input
+  servo.attach(4); //D2
+  servo.write(0);
   
   // Setup serial, wifi, AWS
   Serial.begin(115200);
@@ -208,22 +212,64 @@ void loop() {
     WiFiClient wificlient;
     HTTPClient http;
     
-    // Prepare HTTP GET request for gate open
-    String httpRequestData = serverName + "gate-open-check.php?api_key=" + api_key_value;
-    // Your Domain name with URL path or IP address with path
-    http.begin(wificlient, httpRequestData);
-    // Specify content-type header
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    Serial.print("httpRequestData: ");
-    Serial.println(httpRequestData);
-    // Send HTTP GET request
-    int httpResponseCode = http.GET();
-    String payload = http.getString();    //Get the response payload
-    Serial.println(httpResponseCode);   //Print HTTP return code
-    Serial.println("break");
-    Serial.println(payload);    //Print request response payload 
+    // Open gate after checking space
+    /* if(distanceCm[0] < 20){
+      String httpRequestData = serverName + "gate-open-check.php?api_key=" + api_key_value;
+      // Your Domain name with URL path or IP address with path
+      http.begin(wificlient, httpRequestData);
+      // Specify content-type header
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      Serial.print("httpRequestData: ");
+      Serial.println(httpRequestData);
+      // Send HTTP GET request
+      int httpResponseCode = http.GET();
+      String payload = http.getString();    //Get the response payload
+      Serial.println(httpResponseCode);   //Print HTTP return code
+      Serial.println("break");
+      Serial.println(payload);    //Print request response payload
+      if(payload == "1"){
+        for(int pos=0;pos<=90;pos++){
+          servo.write(pos);
+          delay(30);
+        }
+        delay(3000);
+        for(int pos=90;pos>=0;pos--){
+        servo.write(pos);
+        delay(30);
+        }
+      }
+    }*/
+    
 
- 
+    // Open exit gate and update database
+    if(distanceCm[0] < 20){
+      String httpRequestData = serverName + "exit-gate-open.php?api_key=" + api_key_value;
+      // Your Domain name with URL path or IP address with path
+      http.begin(wificlient, httpRequestData);
+      // Specify content-type header
+      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      Serial.print("httpRequestData: ");
+      Serial.println(httpRequestData);
+      // Send HTTP GET request
+      int httpResponseCode = http.GET();
+      String payload = http.getString();    //Get the response payload
+      Serial.println(httpResponseCode);   //Print HTTP return code
+      Serial.println("break");
+      Serial.println(payload);    //Print request response payload
+      if(payload == "1"){
+        for(int pos=0;pos<=90;pos++){
+          servo.write(pos);
+          delay(30);
+        }
+        delay(3000);
+        for(int pos=90;pos>=0;pos--){
+        servo.write(pos);
+        delay(30);
+        }
+      }
+    }
+    
+    
     // Update parking status locally
     String carsTemp = cars;
     for(int i=0; i < 4; i++){
@@ -255,7 +301,7 @@ void loop() {
       cars = carsTemp;
       String update_parking_status = serverName + "update-parking-status.php";
       // Prepare your HTTP POST request data
-      httpRequestData = "api_key=" + api_key_value + "&cars=" + cars + "";
+      String httpRequestData = "api_key=" + api_key_value + "&cars=" + cars + "";
       // Your Domain name with URL path or IP address with path
       http.begin(wificlient, update_parking_status);
       // Specify content-type header
@@ -263,8 +309,8 @@ void loop() {
       Serial.print("httpRequestData: ");
       Serial.println(httpRequestData);
       // Send HTTP POST request
-      httpResponseCode = http.POST(httpRequestData);
-      payload = http.getString();    //Get the response payload
+      int httpResponseCode = http.POST(httpRequestData);
+      String payload = http.getString();    //Get the response payload
       Serial.println(httpResponseCode);   //Print HTTP return code
       Serial.println("break");
       Serial.println(payload);    //Print request response payload 

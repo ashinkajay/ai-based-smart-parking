@@ -12,7 +12,7 @@
 const char* ssid     = "Mobile hotspot";
 const char* password = "asdfg32334";
 // REPLACE with your Domain name and URL path or IP address with path
-String serverName = "http://192.168.43.68/project/";
+String serverName = "http://anunow.xyz/";
 // Keep this API Key value to be compatible with the PHP code provided in the project page. 
 String api_key_value = "tPmAT5Ab3j7F9"; //Note used here
 
@@ -108,30 +108,18 @@ int get_time(){
 
     
 //Variable definitions
-const int trigPin = 12; //D6
-const int echoPin1 = 14; //D5
-const int echoPin2 = 2; //D4
-const int echoPin3 = 0; //D3
-const int echoPin4 = 4; //D2
-const int echoPin5 = 5; //D1
-//define sound velocity in cm/uS
-#define SOUND_VELOCITY 0.034
-#define CM_TO_INCH 0.393701
-float distanceCm[5]; //1st for sensor for slot and 5th sensor is for gate
+float distanceCm[6]; //1st for sensor for slot and 5th sensor is for gate
 String cars = "0000000000";
 int car_entry_time[10]; //For storing entry timing of cars
-Servo servo;
+Servo servo_entry;
+Servo servo_exit;
 
 
 void setup() {
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(echoPin1, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin2, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin3, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin4, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin5, INPUT); // Sets the echoPin as an Input
-  servo.attach(4); //D2
-  servo.write(0);
+  servo_entry.attach(D0);
+  servo_entry.write(0);
+  servo_exit.attach(D8);
+  servo_exit.write(0);
   
   // Setup serial, wifi, AWS
   Serial.begin(115200);
@@ -195,25 +183,18 @@ void loop() {
     client.loop();
     long now = millis(); //TIme delay for MQTT publish
 
-    // Clears the trigPin
-    digitalWrite(trigPin, LOW);
-    delayMicroseconds(2);
-    // Sets the trigPin on HIGH state for 10 micro seconds
-    digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
-
-    distanceCm[0] = pulseIn(echoPin1, HIGH) * SOUND_VELOCITY/2;
-    distanceCm[1] = pulseIn(echoPin2, HIGH) * SOUND_VELOCITY/2;
-    distanceCm[2] = pulseIn(echoPin3, HIGH) * SOUND_VELOCITY/2;
-    distanceCm[3] = pulseIn(echoPin4, HIGH) * SOUND_VELOCITY/2;
-    distanceCm[4] = pulseIn(echoPin5, HIGH) * SOUND_VELOCITY/2;
+    distanceCm[0] = digitalRead(D1);
+    distanceCm[1] = digitalRead(D2);
+    distanceCm[2] = digitalRead(D3);
+    distanceCm[3] = digitalRead(D4);
+    distanceCm[4] = digitalRead(D5);
+    distanceCm[5] = digitalRead(D6);
   
     WiFiClient wificlient;
     HTTPClient http;
     
     // Open gate after checking space
-    /* if(distanceCm[0] < 20){
+    if(distanceCm[0] == 0){
       String httpRequestData = serverName + "gate-open-check.php?api_key=" + api_key_value;
       // Your Domain name with URL path or IP address with path
       http.begin(wificlient, httpRequestData);
@@ -229,20 +210,20 @@ void loop() {
       Serial.println(payload);    //Print request response payload
       if(payload == "1"){
         for(int pos=0;pos<=90;pos++){
-          servo.write(pos);
+          servo_entry.write(pos);
           delay(30);
         }
-        delay(3000);
+        delay(1000);
         for(int pos=90;pos>=0;pos--){
-        servo.write(pos);
+        servo_entry.write(pos);
         delay(30);
         }
       }
-    }*/
+    }
     
 
     // Open exit gate and update database
-    if(distanceCm[0] < 20){
+    if(distanceCm[5]== 0){
       String httpRequestData = serverName + "exit-gate-open.php?api_key=" + api_key_value;
       // Your Domain name with URL path or IP address with path
       http.begin(wificlient, httpRequestData);
@@ -258,12 +239,12 @@ void loop() {
       Serial.println(payload);    //Print request response payload
       if(payload == "1"){
         for(int pos=0;pos<=90;pos++){
-          servo.write(pos);
+          servo_exit.write(pos);
           delay(30);
         }
-        delay(3000);
+        delay(1000);
         for(int pos=90;pos>=0;pos--){
-        servo.write(pos);
+        servo_exit.write(pos);
         delay(30);
         }
       }
@@ -273,18 +254,18 @@ void loop() {
     // Update parking status locally
     String carsTemp = cars;
     for(int i=0; i < 4; i++){
-      if(distanceCm[i] < 20 && cars[i] == '0'){
+      if(distanceCm[i+1] == 0 && cars[i] == '0'){
         carsTemp.setCharAt(i, '1');
         car_entry_time[i] = get_time();
         Serial.println("Car detected");
       }
-      else if(distanceCm[i] >= 20 && cars[i] == '1') {
+      else if(distanceCm[i+1] == 1 && cars[i] == '1') {
         carsTemp.setCharAt(i, '0');
         Serial.println("Car went out");
         // Publish message to AWS
         if (now - lastMsg > 2000) {
           lastMsg = now;
-          snprintf (msg, 150, "{\"slot\":\"%d\",\"entry_time\": \"%d\",\"exit_time\": \"%d\"}", i+1, car_entry_time[0], get_time() );
+          snprintf (msg, 150, "{\"slot\":\"%d\",\"entry_time\": \"%d\",\"exit_time\": \"%d\"}", i+1, car_entry_time[i], get_time() );
           Serial.print("Publish message: ");
           Serial.println(msg);
           client.publish("carparking", msg);
@@ -313,7 +294,7 @@ void loop() {
       String payload = http.getString();    //Get the response payload
       Serial.println(httpResponseCode);   //Print HTTP return code
       Serial.println("break");
-      Serial.println(payload);    //Print request response payload 
+      Serial.println(payload);    //Print request response payload
     }
     
   

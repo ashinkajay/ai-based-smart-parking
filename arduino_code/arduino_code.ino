@@ -20,7 +20,7 @@ String api_key_value = "tPmAT5Ab3j7F9"; //Note used here
 // AWS, MQTT and HTTP settings
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
-const char* AWS_endpoint = "a3c42m2wshs6eg-ats.iot.us-east-1.amazonaws.com"; //MQTT broker ip
+const char* AWS_endpoint = "access_link"; //MQTT broker ip
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);

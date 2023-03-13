@@ -38,5 +38,3 @@ Software Used:
 4) AWS Dynamodb
 5) Linux Cpanel hosting
 6) MySQL Database
-
-[test](https://google.com)
